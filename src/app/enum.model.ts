@@ -1,24 +1,24 @@
-export class EnumValue {
+export interface EnumValue {
   value: number;
   valueName: string;
   description?: string;
 }
 
-export class EnumLocal {
+export interface EnumLocal {
   name: string;
   description?: string;
   values: EnumValue[];
 }
 
-export class SystemExistence {
+export interface SystemExistence {
   [systemName: string]: EnumLocal;
 }
 
-export class GlobalEnum {
+export interface GlobalEnum {
   systemExistence: SystemExistence;
   description: string;
 }
 
-export class GlobalEnumModel {
+export interface GlobalEnumModel {
   [enumGeneralName: string]: GlobalEnum;
 }

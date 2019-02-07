@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GlobalEnumModel } from './enum.model';
+import { GlobalEnumModel, SystemExistence } from './enum.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class EnumService {
 
   constructor() {
     this.enums = this.initEnums();
-    const {columns, tableData} = this.prepareStructureForTable(this.enums);
+    const {columns, tableData} = this.prepareStructureForEnumTable(this.enums);
     this.columns = columns;
     this.tableData = tableData;
   }
@@ -29,7 +29,7 @@ export class EnumService {
     return this.tableData;
   }
   
-  public prepareStructureForTable(enums) {
+  public prepareStructureForEnumTable(enums) {
     let columns = ['enumName'];
     const tableData = [];
     for (const e of Object.keys(enums)) {
@@ -44,6 +44,31 @@ export class EnumService {
       return unique.includes(item) ? unique : [... unique, item];
     }, []);
     return {columns, tableData};
+  }
+  
+  public prepareStructureForEnumDetailsTable(subSystems: SystemExistence) {
+    let columns = ['value'];
+    const keydTableData = {};
+    for (const e of Object.keys(subSystems)) {
+      columns.push(e);
+      Object.keys(subSystems[e].values).forEach(val => {
+        if (!keydTableData[subSystems[e].values[val].value]) {
+          keydTableData[subSystems[e].values[val].value] = {value: subSystems[e].values[val].value, [e]: subSystems[e].values[val].valueName};
+        } else {
+          keydTableData[subSystems[e].values[val].value][e] = subSystems[e].values[val].valueName;
+        }
+      });
+    }
+    columns = columns.reduce((unique, item) => {
+      return unique.includes(item) ? unique : [... unique, item];
+    }, []);
+    const tableData = Object.values(keydTableData);
+    return {columns, tableData};
+  }
+  
+  
+  public getEnumDetails(name: string) {
+   return this.enums[name];
   }
   
   private initEnums() {

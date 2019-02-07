@@ -7,12 +7,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 import { EnumsComponent } from './enums/enums.component';
+import { EnumDetailsComponent } from './enum-details/enum-details.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    EnumsComponent
+    EnumsComponent,
+    EnumDetailsComponent
   ],
   imports: [
     BrowserModule,
