@@ -43,32 +43,8 @@ export class EnumDetailsComponent implements OnInit {
     }
     const {values, name, description} = this.utils.parseEnums(this.inputEnum, this.activeSubSystem);
     this.enumDetails.systemExistence[this.activeSubSystem].values = values;
-    this.enumDetails.systemExistence[this.activeSubSystem].description = description;
-    this.enumDetails.systemExistence[this.activeSubSystem].name = name;
-    // const e = this.inputEnum.substring(this.inputEnum.indexOf('{') + 1, this.inputEnum.indexOf('}'));
-    //
-    // this.enumDetails.systemExistence[this.activeSubSystem].values = e.split('\n')
-    //   // eliminate empty lines and comment lines
-    //   .filter(val => {
-    //     const line = val.trim();
-    //     return line.length && line.indexOf('//') !== 0;
-    //   })
-    //   .map((val, index) => {
-    //   const tempVal = val.split('=');
-    //   if (tempVal) {
-    //     let value = index;
-    //     let description = '';
-    //     if (tempVal[1].indexOf('//') > 0) {
-    //       const valLine = tempVal[1].split('//');
-    //       value = parseInt(valLine[0], 10);
-    //       description = valLine[1].trim();
-    //     } else {
-    //       value = parseInt(tempVal[1], 10);
-    //     }
-    //     const valueName = tempVal[0].trim();
-    //     return {valueName, value, description};
-    //   }
-    // });
+    // this.enumDetails.systemExistence[this.activeSubSystem].description = description;
+    // this.enumDetails.systemExistence[this.activeSubSystem].name = name;
     const {columns, tableData} = this.enumService.prepareStructureForEnumDetailsTable(_.get(this, 'enumDetails.systemExistence', {}));
     this.displayColumns = columns;
     this.tableData = tableData;

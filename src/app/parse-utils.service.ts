@@ -9,13 +9,13 @@ export class ParseUtilsService {
   constructor() {}
 
   static typeScriptEnumValueFromLine(line: string, index: number, parseInfoObject: SubSystemDefinition): EnumValue {
-    const tempValue = line.trim().split('=');
+    const tempValue = line.trim().split(parseInfoObject.nameValueSeperator);
     if (tempValue) {
       const valueName = tempValue[0].trim();
       let value = index;
       let description = '';
       if (tempValue[1].indexOf(parseInfoObject.commentString) > 0) {
-        const valLine = tempValue[1].split('//');
+        const valLine = tempValue[1].split(parseInfoObject.commentString);
         value = parseInt(valLine[0], 10);
         description = valLine[1].trim();
       } else {
@@ -24,27 +24,39 @@ export class ParseUtilsService {
       return {valueName, value, description};
     }
   }
-  public parseEnums(rowEnum: string, subSystem: string): EnumLocal {
-    switch (subSystem) {
-      case 'mccx':
-        return this.parseTypeScriptEnum(rowEnum, subsystemDefinitions[subSystem]);
-      case 'ugs':
-        return this.parseJavaEnum(rowEnum);
+  static javaEnumValueFromLine(line: string, index: number, parseInfoObject: SubSystemDefinition): EnumValue {
+    const tempValue = line.trim().split(parseInfoObject.nameValueSeperator); // check if an enum can not contain brackets if so add "else"
+    if (tempValue) {
+      const valueName = tempValue[0].trim();
+      let value = index;
+      let description = '';
+      if (tempValue[1].indexOf(parseInfoObject.commentString) > 0) {
+        const valLine = tempValue[1].split(parseInfoObject.commentString);
+        value = parseInt(valLine[0].substring(0, valLine[0].indexOf(')')).split(',')[3], 10);
+        description = valLine[1].trim();
+      } else {
+        value = parseInt(tempValue[1].substring(0, tempValue[1].indexOf(')')).split(',')[3], 10);
+        description = '';
+      }
+      return {valueName, value, description};
     }
   }
-  
+  public parseEnums(rowEnum: string, subSystem: string): EnumLocal {
+    return this.parseEnumBlock(rowEnum, subsystemDefinitions[subSystem]);
+  }
+
   /**
-   * Get to this point after checking that rowEnum is not empty
-   * @param rowEnum
+   * Get to this point after checking that rawEnum is not empty
+   * @param rawEnum
    * @param parseInfoObject
    */
-  private parseTypeScriptEnum(rowEnum: string, parseInfoObject: SubSystemDefinition): EnumLocal {
-    console.log(rowEnum);
-    const name = '';
-    const description = '';
-    const values = rowEnum
+  private parseEnumBlock(rawEnum: string, parseInfoObject: SubSystemDefinition): EnumLocal {
+    console.log(rawEnum);
+    const name = ''; // TODO: extract name from the word before enum
+    const description = ''; // TODO: extract description from the line above the enum decleration
+    const values = rawEnum
       .trim()
-      .substring(rowEnum.indexOf(parseInfoObject.blockStart) + 1, rowEnum.indexOf(parseInfoObject.blockEnd) - 1)
+      .substring(rawEnum.indexOf(parseInfoObject.blockStart) + 1, rawEnum.indexOf(parseInfoObject.blockEnd) - 1)
       .split('\n')
       .filter(val => {
         const line = val.trim();
@@ -55,42 +67,20 @@ export class ParseUtilsService {
       }, []);
     return {values, name, description};
   }
+
   
-  private parseJavaEnum(rowEnum: string) {
-    console.log(rowEnum);
+  
+  private parseJavaEnum(rawEnum: string) {
+    console.log(rawEnum);
     const values = [];
     const name = '';
     const description = '';
     return {values, name, description};
   }
-  
 }
-// const e = this.inputEnum.substring(this.inputEnum.indexOf('{') + 1, this.inputEnum.indexOf('}'));
-//
-// this.enumDetails.systemExistence[this.activeSubSystem].values = e.split('\n')
-//   // eliminate empty lines and comment lines
-//   .filter(val => {
-//     const line = val.trim();
-//     return line.length && line.indexOf('//') !== 0;
-//   })
-//   .map((val, index) => {
-//   const tempVal = val.split('=');
-//   if (tempVal) {
-//     let value = index;
-//     let description = '';
-//     if (tempVal[1].indexOf('//') > 0) {
-//       const valLine = tempVal[1].split('//');
-//       value = parseInt(valLine[0], 10);
-//       description = valLine[1].trim();
-//     } else {
-//       value = parseInt(tempVal[1], 10);
-//     }
-//     const valueName = tempVal[0].trim();
-//     return {valueName, value, description};
-//   }
-// });
+
 const subsystemDefinitions: SubSustemDefinitions = {
-  mccx: {parseType: enumParseType.typeScript, blockStart: '{', blockEnd: '}', commentString: '//', valueFromLine: ParseUtilsService.typeScriptEnumValueFromLine },
-  ugs:  {parseType: enumParseType.java, blockStart: '{', blockEnd: '}', commentString: '//'},
+  mccx: {parseType: enumParseType.typeScript, blockStart: '{', blockEnd: '}', commentString: '//', nameValueSeperator: '=', valueFromLine: ParseUtilsService.typeScriptEnumValueFromLine },
+  ugs:  {parseType: enumParseType.java, blockStart: '{', blockEnd: ';', commentString: '//', nameValueSeperator: '(', valueFromLine: ParseUtilsService.javaEnumValueFromLine},
   mops: {parseType: enumParseType.sql, blockStart: '{', blockEnd: '}', commentString: '//'},
 }

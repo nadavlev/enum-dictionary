@@ -38,5 +38,6 @@ export interface SubSystemDefinition {
   commentString: string;
   blockStart: string;
   blockEnd: string;
+  nameValueSeperator: string;
   valueFromLine: (line: string, index: number, parseInfoObject: SubSystemDefinition) => EnumValue;
 }
