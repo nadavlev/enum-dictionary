@@ -7,6 +7,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
   <li>compare Enums from different subsystems</li>
   <li>import from file</li>
   <li>watch files and inform when out dated</li>
+  <li>Track used enums - to know the Enums that are more popular</li>
 </ol>
  <br>
 

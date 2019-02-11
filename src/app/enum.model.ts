@@ -22,3 +22,21 @@ export interface GlobalEnum {
 export interface GlobalEnumModel {
   [enumGeneralName: string]: GlobalEnum;
 }
+
+export enum enumParseType {
+  typeScript,
+  java,
+  sql
+}
+
+export interface SubSustemDefinitions {
+  [subSystemName: string]: SubSystemDefinition;
+}
+
+export interface SubSystemDefinition {
+  parseType: enumParseType;
+  commentString: string;
+  blockStart: string;
+  blockEnd: string;
+  valueFromLine: (line: string, index: number, parseInfoObject: SubSystemDefinition) => EnumValue;
+}

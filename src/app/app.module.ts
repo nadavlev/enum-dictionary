@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatTableModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatCheckboxModule, MatTableModule } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
 import { EnumsComponent } from './enums/enums.component';
 import { EnumDetailsComponent } from './enum-details/enum-details.component';
@@ -21,7 +21,10 @@ import { EnumDetailsComponent } from './enum-details/enum-details.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatTableModule,
-    CdkTableModule
+    CdkTableModule,
+    MatCardModule,
+    MatButtonModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

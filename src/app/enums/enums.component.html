@@ -2,7 +2,7 @@
   <div *ngFor="let col of displayColumns">
     <ng-container matColumnDef="{{col}}">
       <th mat-header-cell *matHeaderCellDef>{{col}}</th>
-      <td mat-cell *matCellDef="let e">{{e[col]}}</td>
+      <td mat-cell *matCellDef="let e"><a href="/enums/{{e.enumName}}">{{e[col]}}</a></td>
     </ng-container>
   </div>
 
