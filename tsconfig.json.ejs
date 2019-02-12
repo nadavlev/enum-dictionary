@@ -25,8 +25,7 @@
         "lib": ["es2017", "dom"],
         "baseUrl": ".",
         "paths": {
-            "@repo/legacy-app": ["app/index.ts"],
-            "@repo/kendo": ["libs/utils/kendo/src/kendo.all.min.js"]
+            <%- params.typeScriptPaths %>
         }
     },
     "exclude": ["node_modules", "tmp"]

@@ -14,10 +14,10 @@
     <div *ngFor="let col of displayColumns">
       <ng-container matColumnDef="{{col}}">
         <th mat-header-cell *matHeaderCellDef>{{col}}
-          <i class="material-icons" *ngIf="col!='value' && !isInReview" (click)="showAddEnum(col)">
+          <i class="material-icons" *ngIf="col!='value' && !activeSubSystem" (click)="showAddEnum(col)">
             add
           </i>
-          <i class="material-icons" *ngIf="isInReview == col" (click)="saveEnum(col)">
+          <i class="material-icons" *ngIf="activeSubSystem == col" (click)="saveEnum(col)">
             save
           </i>
         </th>
@@ -28,16 +28,4 @@
     <tr mat-header-row *matHeaderRowDef="displayColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
   </table>
-</mat-card>
-
-<mat-card *ngIf="this.showImportInput">
-  <mat-card-title>
-    Import Enum to {{isInReview}}
-  </mat-card-title>
-  <mat-card-content>
-    <textarea rows="30" cols="60" (change)="saveToModel($event)"></textarea><br/>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-raised-button color="primary" (click)="parseEnum()">Review</button>
-  </mat-card-actions>
 </mat-card>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EnumLocal, enumParseType, EnumValue, SubSustemDefinitions, SubSystemDefinition } from './enum.model';
+import { IEnumLocal, enumParseType, IEnumValue, ISubSustemDefinitions, ISubSystemDefinition } from './enum.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +8,7 @@ export class ParseUtilsService {
 
   constructor() {}
 
-  static typeScriptEnumValueFromLine(line: string, index: number, parseInfoObject: SubSystemDefinition): EnumValue {
+  static typeScriptEnumValueFromLine(line: string, index: number, parseInfoObject: ISubSystemDefinition): IEnumValue {
     const tempValue = line.trim().split(parseInfoObject.nameValueSeperator);
     if (tempValue) {
       const valueName = tempValue[0].trim();
@@ -24,7 +24,7 @@ export class ParseUtilsService {
       return {valueName, value, description};
     }
   }
-  static javaEnumValueFromLine(line: string, index: number, parseInfoObject: SubSystemDefinition): EnumValue {
+  static javaEnumValueFromLine(line: string, index: number, parseInfoObject: ISubSystemDefinition): IEnumValue {
     const tempValue = line.trim().split(parseInfoObject.nameValueSeperator); // check if an enum can not contain brackets if so add "else"
     if (tempValue) {
       const valueName = tempValue[0].trim();
@@ -36,12 +36,13 @@ export class ParseUtilsService {
         description = valLine[1].trim();
       } else {
         value = parseInt(tempValue[1].substring(0, tempValue[1].indexOf(')')).split(',')[3], 10);
-        description = '';
+        description = tempValue[1].substring(0, tempValue[1].indexOf(')')).split(',')[0].replace(/"/g, '');
       }
+      
       return {valueName, value, description};
     }
   }
-  public parseEnums(rowEnum: string, subSystem: string): EnumLocal {
+  public parseEnums(rowEnum: string, subSystem: string): IEnumLocal {
     return this.parseEnumBlock(rowEnum, subsystemDefinitions[subSystem]);
   }
 
@@ -50,7 +51,7 @@ export class ParseUtilsService {
    * @param rawEnum
    * @param parseInfoObject
    */
-  private parseEnumBlock(rawEnum: string, parseInfoObject: SubSystemDefinition): EnumLocal {
+  private parseEnumBlock(rawEnum: string, parseInfoObject: ISubSystemDefinition): IEnumLocal {
     console.log(rawEnum);
     const name = ''; // TODO: extract name from the word before enum
     const description = ''; // TODO: extract description from the line above the enum decleration
@@ -67,20 +68,10 @@ export class ParseUtilsService {
       }, []);
     return {values, name, description};
   }
-
-  
-  
-  private parseJavaEnum(rawEnum: string) {
-    console.log(rawEnum);
-    const values = [];
-    const name = '';
-    const description = '';
-    return {values, name, description};
-  }
 }
 
-const subsystemDefinitions: SubSustemDefinitions = {
+export const subsystemDefinitions: ISubSustemDefinitions = {
   mccx: {parseType: enumParseType.typeScript, blockStart: '{', blockEnd: '}', commentString: '//', nameValueSeperator: '=', valueFromLine: ParseUtilsService.typeScriptEnumValueFromLine },
   ugs:  {parseType: enumParseType.java, blockStart: '{', blockEnd: ';', commentString: '//', nameValueSeperator: '(', valueFromLine: ParseUtilsService.javaEnumValueFromLine},
-  mops: {parseType: enumParseType.sql, blockStart: '{', blockEnd: '}', commentString: '//'},
+  mops: {parseType: enumParseType.sql, blockStart: '{', blockEnd: '}', commentString: '//', nameValueSeperator:'', valueFromLine: null},
 }

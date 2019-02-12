@@ -1,0 +1,11 @@
+<mat-card>
+  <mat-card-title>
+    Import Enum to {{data.activeSubSystem}}
+  </mat-card-title>
+  <mat-card-content>
+    <textarea rows="30" cols="60" (change)="saveToModel($event)"></textarea><br/>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]="inputEnum">Review</button>
+  </mat-card-actions>
+</mat-card>

@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { EnumService } from '../enum.service';
-import { GlobalEnum } from '../enum.model';
+import { IGlobalEnum } from '../enum.model';
 import { ActivatedRoute } from '@angular/router';
-import { MatTableDataSource } from '@angular/material';
+import { MatDialog, MatTableDataSource } from '@angular/material';
 import * as _ from 'lodash';
 import { ParseUtilsService } from '../parse-utils.service';
+import { EnumDetailsInsertDialogComponent } from '../enum-details-insert-dialog/enum-details-insert-dialog.component';
+
+export interface IDialogData {
+  activeSubSystem: string
+}
 
 @Component({
   selector: 'app-enum-details',
@@ -15,11 +20,13 @@ export class EnumDetailsComponent implements OnInit {
   private currentEnum: string;
   private displayColumns: string[];
   public tableData;
-  private showImportInput = false;
   private activeSubSystem = '';
   public inputEnum: string;
-  constructor(private route: ActivatedRoute, private enumService: EnumService, private utils: ParseUtilsService) { }
-  private enumDetails: GlobalEnum;
+  
+  constructor(private route: ActivatedRoute, private enumService: EnumService, private utils: ParseUtilsService, public dialog: MatDialog) { }
+  
+  private enumDetails: IGlobalEnum;
+  
   ngOnInit() {
     this.currentEnum = this.route.snapshot.paramMap.get('enumName');
     this.enumDetails = this.enumService.getEnumDetails(this.currentEnum);
@@ -27,18 +34,23 @@ export class EnumDetailsComponent implements OnInit {
     this.displayColumns = columns;
     this.tableData = new MatTableDataSource(tableData);
   }
-  public showAddEnum(subsystemName: string) {
-    this.showImportInput = true;
+  public showAddEnum(subsystemName: string): void {
     this.activeSubSystem = subsystemName;
+    const dialogDRef = this.dialog.open(EnumDetailsInsertDialogComponent, {
+      width: '600px',
+      data: {activeSubSystem: this.activeSubSystem}
+    });
+    dialogDRef.afterClosed().subscribe(result => {
+      this.inputEnum = result;
+      this.parseEnum();
+    });
   }
-  public saveToModel(event) {
-    this.inputEnum = event.target.value;
-  }
+  
   public parseEnum() {
     // take the clean enum
     if (!this.inputEnum) {
-      this.showImportInput = false;
       this.activeSubSystem = '';
+      
       return;
     }
     const {values, name, description} = this.utils.parseEnums(this.inputEnum, this.activeSubSystem);
@@ -48,7 +60,6 @@ export class EnumDetailsComponent implements OnInit {
     const {columns, tableData} = this.enumService.prepareStructureForEnumDetailsTable(_.get(this, 'enumDetails.systemExistence', {}));
     this.displayColumns = columns;
     this.tableData = tableData;
-    this.showImportInput = false;
   }
   public saveEnum(subsystemName: string) {
   

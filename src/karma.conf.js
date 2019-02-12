@@ -18,7 +18,13 @@ module.exports = function (config) {
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, '../coverage/enum-dictionary'),
       reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      thresholds: {
+        statements: 38,
+        lines: 33,
+        branches: 20,
+        functions: 37
+      }
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

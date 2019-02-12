@@ -1,0 +1,8 @@
+{
+    "linterOptions": {
+        "exclude": ["./**/*.d.ts"]
+    },    
+    "rules": {
+        "repo-imports-policy": true
+    }
+}

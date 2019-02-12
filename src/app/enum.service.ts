@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { GlobalEnumModel, SystemExistence } from './enum.model';
+import { IGlobalEnumModel, ISystemExistence } from './enum.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EnumService {
 
-  private enums: GlobalEnumModel;
+  private enums: IGlobalEnumModel;
   private tableData: any[];
   private columns;
 
@@ -17,7 +17,7 @@ export class EnumService {
     this.tableData = tableData;
   }
 
-  public getAllEnums(): GlobalEnumModel {
+  public getAllEnums(): IGlobalEnumModel {
     return this.enums;
   }
   
@@ -29,7 +29,7 @@ export class EnumService {
     return this.tableData;
   }
   
-  public prepareStructureForEnumTable(enums) {
+  private prepareStructureForEnumTable(enums) {
     let columns = ['enumName'];
     const tableData = [];
     for (const e of Object.keys(enums)) {
@@ -43,10 +43,11 @@ export class EnumService {
     columns = columns.reduce((unique, item) => {
       return unique.includes(item) ? unique : [... unique, item];
     }, []);
+    
     return {columns, tableData};
   }
   
-  public prepareStructureForEnumDetailsTable(subSystems: SystemExistence) {
+  public prepareStructureForEnumDetailsTable(subSystems: ISystemExistence) {
     let columns = ['value'];
     const keydTableData = {};
     for (const e of Object.keys(subSystems)) {
@@ -63,6 +64,7 @@ export class EnumService {
       return unique.includes(item) ? unique : [... unique, item];
     }, []);
     const tableData = Object.values(keydTableData);
+    
     return {columns, tableData};
   }
   

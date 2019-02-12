@@ -1,26 +1,26 @@
-export interface EnumValue {
+export interface IEnumValue {
   value: number;
   valueName: string;
   description?: string;
 }
 
-export interface EnumLocal {
+export interface IEnumLocal {
   name: string;
   description?: string;
-  values: EnumValue[];
+  values: IEnumValue[];
 }
 
-export interface SystemExistence {
-  [systemName: string]: EnumLocal;
+export interface ISystemExistence {
+  [systemName: string]: IEnumLocal;
 }
 
-export interface GlobalEnum {
-  systemExistence: SystemExistence;
+export interface IGlobalEnum {
+  systemExistence: ISystemExistence;
   description: string;
 }
 
-export interface GlobalEnumModel {
-  [enumGeneralName: string]: GlobalEnum;
+export interface IGlobalEnumModel {
+  [enumGeneralName: string]: IGlobalEnum;
 }
 
 export enum enumParseType {
@@ -29,15 +29,15 @@ export enum enumParseType {
   sql
 }
 
-export interface SubSustemDefinitions {
-  [subSystemName: string]: SubSystemDefinition;
+export interface ISubSustemDefinitions {
+  [subSystemName: string]: ISubSystemDefinition;
 }
 
-export interface SubSystemDefinition {
+export interface ISubSystemDefinition {
   parseType: enumParseType;
   commentString: string;
   blockStart: string;
   blockEnd: string;
   nameValueSeperator: string;
-  valueFromLine: (line: string, index: number, parseInfoObject: SubSystemDefinition) => EnumValue;
+  valueFromLine?: (line: string, index: number, parseInfoObject: ISubSystemDefinition) => IEnumValue;
 }
