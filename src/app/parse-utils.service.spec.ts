@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ParseUtilsService, subsystemDefinitions } from './parse-utils.service';
-import { Test } from 'tslint';
 
 describe('ParseUtilsService', () => {
   let service: ParseUtilsService;

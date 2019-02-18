@@ -5,7 +5,8 @@ import { EnumService } from './enum.service';
 describe('EnumService', () => {
   let service: EnumService;
   beforeEach(() => {
-    service = new EnumService();
+    //service = new EnumService();
+    TestBed.configureTestingModule({providers: [EnumService]})
   });
 
   it('should be created', () => {

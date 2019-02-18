@@ -4,10 +4,10 @@ import { EnumDetailsComponent } from './enum-details.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatCardModule, MatDialogModule, MatTableModule } from '@angular/material';
 import { CdkTableModule } from '@angular/cdk/table';
+import { EnumService } from '../enum.service';
 
 describe('EnumDetailsComponent', () => {
   let component: EnumDetailsComponent;
-  let fixture: ComponentFixture<EnumDetailsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -17,18 +17,16 @@ describe('EnumDetailsComponent', () => {
         CdkTableModule,
         MatCardModule,
         MatDialogModule],
-      declarations: [ EnumDetailsComponent ]
+      // declarations: [ EnumDetailsComponent ],
+      providers: [ EnumDetailsComponent,
+        {provide: EnumService, useClass: EnumService}]
     })
     .compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EnumDetailsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
   it('should create', () => {
+    component = TestBed.get(EnumDetailsComponent);
     expect(component).toBeTruthy();
   });
+  
 });

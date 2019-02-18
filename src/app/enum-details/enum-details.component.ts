@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EnumService } from '../enum.service';
-import { IGlobalEnum } from '../enum.model';
+import { IGlobalEnum, ISystemExistence } from '../enum.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatTableDataSource } from '@angular/material';
 import * as _ from 'lodash';
@@ -18,21 +18,19 @@ export interface IDialogData {
 })
 export class EnumDetailsComponent implements OnInit {
   private currentEnum: string;
-  private displayColumns: string[];
+  public displayColumns: string[];
   public tableData;
-  private activeSubSystem = '';
+  public activeSubSystem = '';
   public inputEnum: string;
+  public enumDetails: IGlobalEnum;
   
   constructor(private route: ActivatedRoute, private enumService: EnumService, private utils: ParseUtilsService, public dialog: MatDialog) { }
   
-  private enumDetails: IGlobalEnum;
   
   ngOnInit() {
     this.currentEnum = this.route.snapshot.paramMap.get('enumName');
     this.enumDetails = this.enumService.getEnumDetails(this.currentEnum);
-    const {columns, tableData} = this.enumService.prepareStructureForEnumDetailsTable(_.get(this, 'enumDetails.systemExistence', {}));
-    this.displayColumns = columns;
-    this.tableData = new MatTableDataSource(tableData);
+    this.tableDataFromSystemExistance(this.enumDetails.systemExistence);
   }
   public showAddEnum(subsystemName: string): void {
     this.activeSubSystem = subsystemName;
@@ -41,27 +39,32 @@ export class EnumDetailsComponent implements OnInit {
       data: {activeSubSystem: this.activeSubSystem}
     });
     dialogDRef.afterClosed().subscribe(result => {
-      this.inputEnum = result;
-      this.parseEnum();
+      if (this.enumIsCandidateForParsing(result)) {
+        this.inputEnum = result;
+        const {values, name, description} = this.utils.parseEnums(this.inputEnum, this.activeSubSystem);
+        this.enumDetails.systemExistence[this.activeSubSystem].values = values;
+        // this.enumDetails.systemExistence[this.activeSubSystem].description = description;
+        // this.enumDetails.systemExistence[this.activeSubSystem].name = name;
+        this.tableDataFromSystemExistance(this.enumDetails.systemExistence);
+      }
+      this.clearActiveSystem();
     });
   }
   
-  public parseEnum() {
-    // take the clean enum
-    if (!this.inputEnum) {
-      this.activeSubSystem = '';
-      
-      return;
-    }
-    const {values, name, description} = this.utils.parseEnums(this.inputEnum, this.activeSubSystem);
-    this.enumDetails.systemExistence[this.activeSubSystem].values = values;
-    // this.enumDetails.systemExistence[this.activeSubSystem].description = description;
-    // this.enumDetails.systemExistence[this.activeSubSystem].name = name;
-    const {columns, tableData} = this.enumService.prepareStructureForEnumDetailsTable(_.get(this, 'enumDetails.systemExistence', {}));
-    this.displayColumns = columns;
-    this.tableData = tableData;
+  private enumIsCandidateForParsing(inuptEnum: string): boolean {
+    return this.inputEnum.trim().length > 0
   }
-  public saveEnum(subsystemName: string) {
   
+  private tableDataFromSystemExistance(systemExistence: ISystemExistence):void {
+    const {columns, tableData} = this.enumService.prepareStructureForEnumDetailsTable(systemExistence);
+    this.displayColumns = columns;
+    this.tableData = new MatTableDataSource(tableData);
   }
+  
+  private clearActiveSystem(): void{
+    this.activeSubSystem = '';
+  }
+  // public saveEnum(subsystemName: string) {
+  //
+  // }
 }
